@@ -1,0 +1,184 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "CreateDivergence",
+    "description": "API utilizado para criar as notificações de divergência no portal de devolução.",
+    "contact": {
+      "url": "https://produs2devportalapimgmtpphx-d7bd04f0d.us2.hana.ondemand.com",
+      "email": "api@ache.com.br"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://apiachehmg.apimanagement.us2.hana.ondemand.com/vmock/divergence/v1"
+    }
+  ],
+  "security": [
+    {
+      "application": [
+        "none"
+      ]
+    }
+  ],
+  "paths": {
+    "/divergence": {
+      "post": {
+        "summary": "Método utilizado para criar as notificações de divergências no portal de devolução da Aché.",
+        "description": "Método utilizado para criar as notificações de divergência.",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Parâmetro para envio das credenciais. Access Token deve ser enviado concatenado da string \"Bearer\".",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "Valor para o parâmetro (header) content-type.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "InvalidateCache",
+            "in": "header",
+            "description": "Parâmetro que indica se o cache deve ser utilizado. Se o cache não for utilizado, esse parâmetro deve ser enviado com o valor true.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Parâmetros de entrada da API para criação da divergência.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/divergenceRequest"
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "description": "Divergência criado com sucesso!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/divergenceResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Exceção não prevista.",
+            "content": {}
+          }
+        },
+        "x-auth-type": "Application & Application User",
+        "x-throttling-tier": "Unlimited",
+        "x-codegen-request-body-name": "ParametrosEntrada"
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "parametrosEntrada": {
+        "type": "object",
+        "properties": {
+          "accessKey": {
+            "type": "string",
+            "description": "Chave de acesso da NF-e."
+          },
+          "issuerCnpj": {
+            "type": "string",
+            "description": "CNPJ do emissor."
+          },
+          "issuerName": {
+            "type": "string",
+            "description": "Nome do emissor."
+          },
+          "referenceKey": {
+            "type": "string",
+            "description": "Chave de referência."
+          },
+          "issueDate": {
+            "type": "string",
+            "description": "Data de emissão."
+          },
+          "divergence": {
+            "type": "array",
+            "description": "Estrutura das divergências.",
+            "items": {
+              "$ref": "#/components/schemas/divergenceType"
+            }
+          }
+        }
+      },
+      "divergenceRequest": {
+        "$ref": "#/components/schemas/parametrosEntrada"
+      },
+      "divergenceResponse": {
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "string",
+            "description": "Código do status de retorno da requisição."
+          },
+          "type": {
+            "type": "string",
+            "description": "Tipo de mensagem (S = sucesso | E = erro | W = aviso)."
+          },
+          "message": {
+            "type": "string",
+            "description": "Descritivo da mensagem."
+          },
+          "dateTime": {
+            "type": "string",
+            "description": "Data e hora da requisição."
+          }
+        }
+      },
+      "divergenceType": {
+        "type": "object",
+        "properties": {
+          "divergenceId": {
+            "type": "string",
+            "description": "Código do motivo da divergência."
+          },
+          "nfeNumber": {
+            "type": "string",
+            "description": "Nº NF-e (nove posições)."
+          },
+          "series": {
+            "type": "string",
+            "description": "Series."
+          },
+          "divergenceDescription": {
+            "type": "string",
+            "description": "Descrição do motivo da divergência."
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "application": {
+        "type": "oauth2",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://apiachehmg.apimanagement.us2.hana.ondemand.com/v1/Logon/GenerateToken",
+            "scopes": {
+              "none": "Não existem scopes definidos para essa API."
+            }
+          }
+        }
+      }
+    }
+  }
+}
